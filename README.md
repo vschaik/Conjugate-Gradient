@@ -7,4 +7,4 @@ By: [Jonathan Richard Shewchuk](https://people.eecs.berkeley.edu/~jrs/) August 1
 
 Converted to a notebook by [André van Schaik](http://westernsydney.edu.au/bens) in June 2017. You can now zoom images and rotate 3D images, and I've added a few interactive figures with sliders to play with. 
 
-Start reading at CG00.ipynb
+Start reading at [CG00.ipynb](https://github.com/vschaik/Conjugate-Gradient/blob/master/CG00.ipynb)
