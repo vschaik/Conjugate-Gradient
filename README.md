@@ -5,4 +5,6 @@ The idea of quadratic forms is introduced and used to derive the methods of Stee
 
 By: [Jonathan Richard Shewchuk](https://people.eecs.berkeley.edu/~jrs/) August 1994
 
-Converted to a notebook by [André van Schaik](http://westernsydney.edu.au/bens) in June 2017. You can now zoom images and rotate 3D images, and I've added a few interactive figures with sliders to play with.
+Converted to a notebook by [André van Schaik](http://westernsydney.edu.au/bens) in June 2017. You can now zoom images and rotate 3D images, and I've added a few interactive figures with sliders to play with. 
+
+Start reading at CG00.ipynb
