@@ -144,7 +144,8 @@ def plotAb2D(A, b, fig=None, fs=14):
 def plotAbc3D(A, b, c, fig=None, alpha=1):
     if fig==None:
         fig = plt.figure(figsize=(6,6), num='Figure 2')
-    ax = fig.gca(projection='3d')
+    # ax = fig.gca(projection='3d')
+    ax = plt.subplot(projection='3d')
     size = 20
     x1 = np.linspace(-4, 6, size)
     x2 = np.linspace(-6, 4, size)
