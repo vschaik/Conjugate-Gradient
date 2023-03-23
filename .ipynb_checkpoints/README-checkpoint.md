@@ -9,4 +9,4 @@ Converted to a notebook by [André van Schaik](http://westernsydney.edu.au/bens)
 
 Start reading at [CG00.ipynb](https://github.com/vschaik/Conjugate-Gradient/blob/master/CG00.ipynb)
 
-**Edit** I've updated these in January 2021 to use the %matplotlib widget environment for compatibility with JupyterLab. For this to work you will need to have installed the ipympl package and the jupyterlabs-widget extension. For instructions see [here](https://github.com/matplotlib/ipympl)
+**Edit** I've updated these in January 2021 and again in March 2023 to use the %matplotlib widget environment for compatibility with JupyterLab. For this to work you will need to have installed the ipympl package and the jupyterlabs-widget extension. For instructions see [here](https://github.com/matplotlib/ipympl)

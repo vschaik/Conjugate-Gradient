@@ -141,11 +141,10 @@ def plotAb2D(A, b, fig=None, fs=14):
     plt.axis([-4,6,-6,4])
 
 
-def plotAbc3D(A, b, c, fig=None, alpha=1):
-    if fig==None:
+def plotAbc3D(A, b, c, ax=None, alpha=1):
+    if ax==None:
         fig = plt.figure(figsize=(6,6), num='Figure 2')
-    # ax = fig.gca(projection='3d')
-    ax = plt.subplot(projection='3d')
+        ax = plt.subplot(projection='3d')
     size = 20
     x1 = np.linspace(-4, 6, size)
     x2 = np.linspace(-6, 4, size)
@@ -161,9 +160,10 @@ def plotAbc3D(A, b, c, fig=None, alpha=1):
     ax.set_zlabel(r'$f(x)$', fontsize = 12)
 
 
-def plotcontours(A, b, c, fig=None, pltrange = (-4, 6, -6, 4, 20)):
-    if fig==None:
+def plotcontours(A, b, c, ax=None, pltrange = (-4, 6, -6, 4, 20)):
+    if ax==None:
         fig = plt.figure(figsize=(6,6), num='Figure 3')
+        ax = fig.gca()
     size = pltrange[4]
     x1 = np.linspace(pltrange[0], pltrange[1], size)
     x2 = np.linspace(pltrange[2], pltrange[3], size)
@@ -173,21 +173,42 @@ def plotcontours(A, b, c, fig=None, pltrange = (-4, 6, -6, 4, 20)):
         for j in range(size):
             x = np.matrix([[x1[i,j]], [x2[i,j]]])
             zs[i,j] = f(x, A, b, c)
-    cp = plt.contour(x1, x2, zs, 20)
+    cp = ax.contour(x1, x2, zs, 20)
     plt.clabel(cp, inline=1, fontsize=8)
     plt.text(pltrange[0], pltrange[3]+0.2, r'$x_2$', fontsize = 14)
     plt.text(pltrange[1]+0.2, pltrange[2], r'$x_1$', fontsize = 14)
 
 
-def vectorfield(A, b, c, fig=None):
-    if fig==None:
+def vectorfield(A, b, c, ax=None):
+    if ax==None:
         fig = plt.figure(figsize=(6,6), num='Figure 4')
+        ax = fig.gca()
     size = 20
     x1 = np.linspace(-4, 6, size)
     x2 = np.linspace(-6, 4, size)
     x1, x2 = np.meshgrid(x1, x2)
-    plt.quiver(x1, x2, A[0,0]*x1 + A[0,1]*x2 - b[0,0] + c, A[1,0]*x1 + A[1,1]*x2 - b[1,0] + c)
-    plotcontours(A, b, c, fig)
+    ax.quiver(x1, x2, A[0,0]*x1 + A[0,1]*x2 - b[0,0] + c, A[1,0]*x1 + A[1,1]*x2 - b[1,0] + c)
+    plotcontours(A, b, c, ax)
+
+
+def fig5():
+    fig = plt.figure(figsize=(7.5,6), num='Figure 5')
+    ax0 = fig.add_subplot(2, 2, 1, projection='3d')
+    A = np.matrix([[3., 2.], [2., 6.]]); b = np.matrix([[2.], [-8.]])
+    plotAbc3D(A, b, 0., ax0, alpha=0.7)
+    plt.title('(a)')
+    ax1 = fig.add_subplot(2, 2, 2, projection='3d')
+    A = np.matrix([[-6., -1.], [-1., -6.]]); b = np.matrix([[0.], [0.]])
+    plotAbc3D(A, b, 0., ax1, alpha=0.7)
+    plt.title('(b)')
+    ax2 = fig.add_subplot(2, 2, 3, projection='3d')
+    A = np.matrix([[1., 2.], [2., 4.]]); b = np.matrix([[-1.5], [-3.]])
+    plotAbc3D(A, b, 0., ax2, alpha=0.7)
+    plt.title('(c)')
+    ax3 = fig.add_subplot(2, 2, 4, projection='3d')
+    A = np.matrix([[8., -1.], [-1., -6.]]); b = np.matrix([[0.], [0.]])
+    plotAbc3D(A, b, 0., ax3, alpha=0.7)
+    plt.title('(d)')
 
 
 def fig_A():
@@ -272,7 +293,7 @@ def sliders_figA(hdls):
                 zs[i,j] = f(x, np.matrix([[A_00, A_01],[A_10, A_11]]), np.matrix([[b_0],[b_1]]), c_0)
                 
         # update contours
-        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.LineCollection)]
+        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.PathCollection)]
         ax1.contour(x1, x2, zs, 20)
         
         # update quiver
@@ -310,33 +331,13 @@ def sliders_figA(hdls):
     ipw.interactive(update_plots, A_00=A_00, A_01=A_01, A_10=A_10, A_11=A_11, b_0=b_0, b_1=b_1, c_0=c_0)
 
 
-def fig5():
-    fig = plt.figure(figsize=(7.5,6), num='Figure 5')
-    fig.add_subplot(2, 2, 1, projection='3d')
-    A = np.matrix([[3., 2.], [2., 6.]]); b = np.matrix([[2.], [-8.]])
-    plotAbc3D(A, b, 0., fig, alpha=0.7)
-    plt.title('(a)')
-    fig.add_subplot(2, 2, 2, projection='3d')
-    A = np.matrix([[-6., -1.], [-1., -6.]]); b = np.matrix([[0.], [0.]])
-    plotAbc3D(A, b, 0., fig, alpha=0.7)
-    plt.title('(b)')
-    fig.add_subplot(2, 2, 3, projection='3d')
-    A = np.matrix([[1., 2.], [2., 4.]]); b = np.matrix([[-1.5], [-3.]])
-    plotAbc3D(A, b, 0., fig, alpha=0.7)
-    plt.title('(c)')
-    fig.add_subplot(2, 2, 4, projection='3d')
-    A = np.matrix([[8., -1.], [-1., -6.]]); b = np.matrix([[0.], [0.]])
-    plotAbc3D(A, b, 0., fig, alpha=0.7)
-    plt.title('(d)')
-
-
 def fig6(A, b, c):
     fig = plt.figure(figsize=(6,6), num='Figure 6')
     x = np.matrix([[-2.0],[-2.0]])
     r = b - A * x
     delta = float(r.T * r)
     ax = fig.add_subplot(2, 2, 1)
-    plotcontours(A, b, c, fig)
+    plotcontours(A, b, c, ax)
     plt.plot([x[0,0], (x+r)[0,0]], [x[1,0], (x+r)[1,0]], 'g')
     plt.plot(x[0,0], x[1,0], 'k', marker='o', markersize=6)
     plt.text(-2.5, -1.5, r'$x[0]$', fontsize = 10)
@@ -347,7 +348,7 @@ def fig6(A, b, c):
     ax.set_title('(a)')
 
     ax = fig.add_subplot(2, 2, 2, projection='3d')
-    plotAbc3D(A, b, c, fig, alpha=0.5)
+    plotAbc3D(A, b, c, ax, alpha=0.5)
     xx = np.arange(-4,6)
     yy = (xx+2)*r[1,0]/r[0,0] - 2
     zz = 0.5*(A[0,0]*xx*xx + A[0,1]*xx*yy + A[1,0]*xx*yy + A[1,1]*yy*yy) - b[0,0]*xx - b[1,0]*yy
@@ -363,7 +364,7 @@ def fig6(A, b, c):
     ax.set_title('(c)')
 
     ax = fig.add_subplot(2, 2, 4)
-    plotcontours(A, b, c, fig)
+    plotcontours(A, b, c, ax)
     alpha = float(delta / (r.T * (A * r)))
     xnew = x + alpha*r
     rnew = b - A*xnew
@@ -381,7 +382,7 @@ def fig7(A, b, c):
     r = b - A * x
     delta = float(r.T * r)
     alpha = float(delta / (r.T * (A * r)))
-    plotcontours(A, b, c, fig)
+    plotcontours(A, b, c, ax)
     plt.plot([x[0,0], (x+r)[0,0]], [x[1,0], (x+r)[1,0]], 'g')
     plt.plot(x[0,0], x[1,0], 'k', marker='o', markersize=6)
     plt.plot(2, -2, color='grey', marker='o', markersize=6)
@@ -401,7 +402,8 @@ def fig8(A, b, c):
     x = np.matrix([[-2.0],[-2.0]])
     steps = SD(A, b, x)
     fig = plt.figure(figsize=(6,6), num='Figure 8')
-    plotcontours(A, b, c, fig)
+    ax = fig.gca()
+    plotcontours(A, b, c, ax)
     plt.plot(steps[0,:], steps[1,:], '-o')
 
 
@@ -450,7 +452,7 @@ def sliders_figB(ax1):
                 zs[i,j] = f(x, np.matrix([[A_00, A_01],[A_10, A_11]]), np.matrix([[b_0],[b_1]]), 0)
                 
         # update contours
-        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.LineCollection)]
+        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.PathCollection)]
         ax1.contour(x1, x2, zs, 20)
         
         # update steps
@@ -691,7 +693,7 @@ def fig11():
 def fig12(A, b, c):
     fig = plt.figure(figsize=(6,6), num='Figure 12')
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     plt.text(1, -2, '2', fontsize = 14)
     plt.text(2.5, -1.5, '7', fontsize = 14)
     ax.arrow(2, -2, -2, 1, color = 'k', lw=1, width=.05)
@@ -711,7 +713,7 @@ def fig13():
     e = np.matrix([[-4],[0]])
 
     ax = fig.add_subplot(3,2,1)
-    plotcontours(A,b,0, fig)
+    plotcontours(A,b,0, ax)
     plt.text(2.7, -2, '-0.47', fontsize = 12)
     plt.text(-0.4, -2, '0.47', fontsize = 12)
     ax.arrow(2, -2, v1[0,0], v1[1,0], head_width = .2, head_length = .3, length_includes_head = True, color = 'k')
@@ -733,7 +735,7 @@ def fig13():
         v2steps = np.append(v2steps, np.asarray(v2), axis=1)
 
     ax = fig.add_subplot(3,2,2)
-    plotcontours(A,b,0, fig)
+    plotcontours(A,b,0, ax)
     ax.plot(steps[0,:], steps[1,:], '-o')
     ax.text(2.2, -2.2, r'$x$', fontsize=14)
     ax.text(-2.2, -1.5, r'$x_{[0]}$', fontsize=14)
@@ -810,7 +812,7 @@ def fig14():
     v = np.matrix([[-2.],[1]])
     fig = plt.figure(figsize=(6,6), num='Figure 14')
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A, b, 0, fig)
+    plotcontours(A, b, 0, ax)
     ax.arrow(2+2.5*v[0,0], -2+2.5*v[1,0], -2.5*v[0,0], -2.5*v[1,0], head_width = .2, head_length = .3, length_includes_head = True, color = 'k')
     ax.plot(2+2.5*v[0,0], -2+2.5*v[1,0], 'o')
     plt.axis([-4,6,-6,4])
@@ -822,7 +824,7 @@ def fig15():
     v = np.matrix([[2.],[1.]])
     fig = plt.figure(figsize=(6,6), num='Figure 15')
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A, b, 0, fig)
+    plotcontours(A, b, 0, ax)
     ax.arrow(-2+2.5*v[0,0], -1+2.5*v[1,0], -2.5*v[0,0], -2.5*v[1,0], head_width = .2, head_length = .3, length_includes_head = True, color = 'k')
     ax.plot(-2+2.5*v[0,0], -1+2.5*v[1,0], 'o')
     plt.axis([-4,6,-6,4])
@@ -835,7 +837,7 @@ def fig16():
     v2 = np.matrix([[1.],[2.]])
     fig = plt.figure(figsize=(6,6), num='Figure 16')
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A, b, 0, fig)
+    plotcontours(A, b, 0, ax)
     ax.arrow(2, -2, 1.4*v1[0,0], 1.4*v1[1,0], head_width = .2, head_length = .3, length_includes_head = True, color = 'k')
     ax.arrow(2, -2, .75*v2[0,0], .75*v2[1,0], head_width = .2, head_length = .3, length_includes_head = True, color = 'k')
     plt.axis([-4,6,-6,4])
@@ -843,7 +845,7 @@ def fig16():
 
 def fig17():
     fig = plt.figure(figsize=(6,5), num='Figure 17')
-    ax = fig.gca(projection='3d')
+    ax = fig.add_subplot(1, 1, 1, projection='3d')
     size = 20
     kappa = np.linspace(1, 100, size)
     mu = np.linspace(0, 20, size)
@@ -866,7 +868,7 @@ def fig18():
     b = np.matrix([[0.0], [0.0]])
     c = 0
     x = np.matrix([[5],[1]])
-    plotcontours(A,b,c,fig,(-5,5,-4,6,20))
+    plotcontours(A, b, c, ax,(-5,5,-4,6,20))
     steps = SD(A, b, x)
     ax.plot(steps[0,:], steps[1,:], '-o', color='m')
     ax.set_title('(a)')
@@ -877,7 +879,7 @@ def fig18():
     b = np.matrix([[0.0], [0.0]])
     c = 0
     x = np.matrix([[.5],[5]])
-    plotcontours(A,b,c,fig,(-5,5,-4,6,20))
+    plotcontours(A, b, c, ax,(-5,5,-4,6,20))
     steps = SD(A, b, x, imax=20)
     ax.plot(steps[0,:], steps[1,:], '-o', color='m')
     ax.set_title('(b)')
@@ -887,7 +889,7 @@ def fig18():
     b = np.matrix([[0.0], [0.0]])
     c = 0
     x = np.matrix([[5],[1]])
-    plotcontours(A,b,c,fig,(-5,5,-4,6,20))
+    plotcontours(A, b, c, ax,(-5,5,-4,6,20))
     steps = SD(A, b, x)
     ax.plot(steps[0,:], steps[1,:], '-o', color='m')
     ax.set_title('(c)')
@@ -899,7 +901,7 @@ def fig18():
     b = np.matrix([[0.0], [0.0]])
     c = 0
     x = np.matrix([[.5],[5]])
-    plotcontours(A,b,c,fig,(-5,5,-4,6,20))
+    plotcontours(A, b, c, ax,(-5,5,-4,6,20))
     steps = SD(A, b, x)
     ax.plot(steps[0,:], steps[1,:], '-o', color='m')
     ax.set_title('(d)')
@@ -915,7 +917,7 @@ def fig19():
     v2 = np.matrix([[-2.0],[1.0]])
     x = np.matrix([[2 + v1[0,0] + 3.5*v2[0,0]], [-2 + v1[1,0] + 3.5*v2[1,0]]])/1.5
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     ax.arrow(2, -2, v1[0,0], v1[1,0], color = '#777777', head_width = .2, head_length = .3, length_includes_head = True)
     ax.arrow(2, -2, v2[0,0], v2[1,0], color = '#777777', head_width = .2, head_length = .3, length_includes_head = True)
     ax.plot([2 - v1[0,0] - 3.5*v2[0,0], 2 + v1[0,0] + 3.5*v2[0,0]], [-2 - v1[1,0] - 3.5*v2[1,0], -2 + v1[1,0] + 3.5*v2[1,0]], color='k')
@@ -947,7 +949,7 @@ def fig21():
     v2 = np.matrix([[0.0],[-1.0]])
     x = np.matrix([[-3.0], [-3.0]])
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     ax.plot(x[0,0], x[1,0], 'o', color='k')
     ax.plot(2, -2, 'o', color='k')
     ax.arrow(x[0,0], x[1,0], v1[0,0], v1[1,0], color = 'k', head_width = .2, head_length = .3, length_includes_head = True)
@@ -969,7 +971,7 @@ def fig22():
                   -1, -1, 0.8, -1.2, 0.7, -1., -0.7, 1.4, 0, 1, 2, 0.7, 0, 1, 1, -1)).reshape((2,16))
     x = np.array((1, 5, 1, -3, 5, 5, -3, -3, 3, -1, -5, -1, 3, -5, -5, 3)).reshape((2,8))
     ax = fig.add_subplot(1, 2, 2)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     for i in range(8):
         ax.arrow(x[0,i], x[1,i], v[0,2*i], v[1,2*i], color = 'k', head_width = .2, head_length = .3, length_includes_head = True)
         ax.arrow(x[0,i], x[1,i], v[0,2*i+1], v[1,2*i+1], color = 'k', head_width = .2, head_length = .3, length_includes_head = True)   
@@ -978,7 +980,7 @@ def fig22():
     b = np.matrix([[1.], [-9.0]])
     c = 0
     ax = fig.add_subplot(1, 2, 1)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     for i in range(8):
         ax.arrow(x[0,i], x[1,i], v[0,2*i], v[1,2*i]/3., color = 'k', head_width = .2, head_length = .3, length_includes_head = True)
         ax.arrow(x[0,i], x[1,i], v[0,2*i+1], v[1,2*i+1]/3., color = 'k', head_width = .2, head_length = .3, length_includes_head = True)   
@@ -994,7 +996,7 @@ def fig23():
     d = np.matrix([[0],[1]])
     alpha = -float((d.T * A * e)/(d.T * A * d))
     ax = fig.add_subplot(1, 2, 1)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     ax.plot(x[0,0], x[1,0], 'o', color='k')
     ax.plot(2, -2, 'o', color='k')
     ax.arrow(2, -2, x[0,0] + alpha*d[0,0]-2, x[1,0] + alpha*d[1,0]+2, color = '#777777', head_width = .2, head_length = .3, length_includes_head = True)
@@ -1006,7 +1008,7 @@ def fig23():
     ax.set_title('(a)')
 
     ax = fig.add_subplot(1, 2, 2)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     ax.plot(x[0,0], x[1,0], 'o', color='k')
     ax.plot(2, -2, 'o', color='k')
     ax.arrow(2, -2, x[0,0] + alpha*d[0,0]-2, x[1,0] + alpha*d[1,0]+2, color = '#777777', head_width = .2, head_length = .3, length_includes_head = True)
@@ -1079,7 +1081,7 @@ def fig25():
     alpha = float((d0.T * A * e0)/(d0.T * A * d0))
     x = np.matrix([[-3], [-3]])
     ax = fig.add_subplot(1, 1, 1)
-    plotcontours(A,b,c, fig)
+    plotcontours(A, b, c, ax)
     ax.plot(x[0,0], x[1,0], 'ko')
     ax.plot([x[0,0], x[0,0]+alpha, 2], [x[1,0], x[1,0], -2], color='m')
     plt.axis([-4,6,-6,4])
@@ -1204,7 +1206,8 @@ def fig30(A, b, c):
     x = np.matrix([[-2.0],[-2.0]])
     steps = CG(A, b, x)
     fig = plt.figure(figsize=(6,6), num='Figure 30')
-    plotcontours(A, b, c, fig)
+    ax = fig.gca()
+    plotcontours(A, b, c, ax)
     plt.plot(steps[0,:], steps[1,:], '-mo')
     plt.text(-2.5, -2.0, r'$x_{[0]}$', fontsize=13)
     plt.text(2.1, -2.0, r'$x$', fontsize=13)
@@ -1255,7 +1258,7 @@ def sliders_figC(ax1):
                 zs[i,j] = f(x, np.matrix([[A_00, A_01],[A_10, A_11]]), np.matrix([[b_0],[b_1]]), 0)
                 
         # update contours
-        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.LineCollection)]
+        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.PathCollection)]
         ax1.contour(x1, x2, zs, 20)
         
         # update steps
@@ -1485,12 +1488,12 @@ def fig35():
 
 def fig36():
     fig = plt.figure(figsize=(6,6), num='Figure 36')
+    ax = fig.gca()
     A = np.matrix([[3.0, 2.0], [2.0, 6.0]])
     b = np.matrix([[2.0], [-8.0]])
     c = 0.0
     Minv = np.matrix([[1/3.0, 0.0], [0.0, 1/6.0]])
-    fig.add_subplot(1, 1, 1)
-    plotcontours(Minv*A,Minv*b,c, fig, (-4,6,-9,1,20))
+    plotcontours(Minv*A,Minv*b,c, ax, (-4,6,-9,1,20))
     plt.axis([-4,6,-9,1])
 
 
