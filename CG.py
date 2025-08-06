@@ -293,7 +293,7 @@ def sliders_figA(hdls):
                 zs[i,j] = f(x, np.matrix([[A_00, A_01],[A_10, A_11]]), np.matrix([[b_0],[b_1]]), c_0)
                 
         # update contours
-        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.PathCollection)]
+        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.contour.QuadContourSet)]
         ax1.contour(x1, x2, zs, 20)
         
         # update quiver
@@ -452,7 +452,7 @@ def sliders_figB(ax1):
                 zs[i,j] = f(x, np.matrix([[A_00, A_01],[A_10, A_11]]), np.matrix([[b_0],[b_1]]), 0)
                 
         # update contours
-        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.PathCollection)]
+        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.contour.QuadContourSet)]
         ax1.contour(x1, x2, zs, 20)
         
         # update steps
@@ -1094,7 +1094,7 @@ def fig26():
     d1 = np.matrix([[1], [1]])
     ax = fig.add_subplot(1, 1, 1)
     ax.add_patch(Polygon(np.array([[-5,-3], [-3,-1], [4,-1], [2,-3]]),fc='#999999', ec='k'))
-    ax.add_patch(Ellipse(np.array([0,0]), 2, 5, 40, fc='None', ec='k'))
+    ax.add_patch(Ellipse(np.array([0,0]), 2, 5, angle=40, fc='None', ec='k'))
     ax.arrow(-4.25, -2.75, d0[0,0], d0[1,0], head_width = .12, head_length = .2, length_includes_head = True, color='k')
     ax.arrow(-4.25, -2.75, d1[0,0], d1[1,0], head_width = .12, head_length = .2, length_includes_head = True, color='k')
     ax.text(-2.2, -2.75, r'$d_{[0]}$', fontsize=12)
@@ -1258,7 +1258,7 @@ def sliders_figC(ax1):
                 zs[i,j] = f(x, np.matrix([[A_00, A_01],[A_10, A_11]]), np.matrix([[b_0],[b_1]]), 0)
                 
         # update contours
-        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.collections.PathCollection)]
+        [h.remove() for h in ax1.get_children() if isinstance(h, matplotlib.contour.QuadContourSet)]
         ax1.contour(x1, x2, zs, 20)
         
         # update steps
